@@ -63,7 +63,7 @@ export default function Home() {
 
   return (
     <div className="p-8">
-      <h1 className="text-2xl">Test Filter Sample</h1>
+      <h1 className="text-2xl">PROJECT JAEGER - XP+ SOFTDEV</h1>
       <div className="flex gap-5">
         <div className="w-1/3 h-full mt-10">
           <strong>Serial Number</strong>
