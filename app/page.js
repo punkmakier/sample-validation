@@ -86,10 +86,16 @@ export default function Home() {
             <div>
               <h1
                 className={`text-4xl font-bold ${
-                  result.found ? "text-green-600" : "text-red-600"
+                  !result.found
+                    ? "text-red-600"
+                    : result.status === "CLAIMED"
+                    ? "text-gray-600"
+                    : "text-green-600"
                 }`}>
                 {result.found
-                  ? `${result.number.toUpperCase()} FOUND`
+                  ? result.status !== "CLAIMED"
+                    ? `${result.number.toUpperCase()} FOUND`
+                    : result.number.toUpperCase()
                   : `${result.number.toUpperCase()} NOT FOUND`}{" "}
                 {result.status === "CLAIMED" ? "CLAIMED" : ""}
               </h1>
