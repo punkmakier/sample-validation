@@ -1,103 +1,110 @@
-import Image from "next/image";
+"use client";
+
+import { useState } from "react";
 
 export default function Home() {
-  return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm/6 text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-[family-name:var(--font-geist-mono)] font-semibold">
-              app/page.js
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
+  const [serialNumbers, setSerialNumbers] = useState([
+    { id: 1, number: "152ds4", status: "claimed" },
+    { id: 2, number: "89er3d", status: "unclaim" },
+    { id: 3, number: "45trg2", status: "claimed" },
+    { id: 4, number: "zxc123", status: "unclaim" },
+    { id: 5, number: "rt67uh", status: "claimed" },
+    { id: 6, number: "mnbv9k", status: "unclaim" },
+  ]);
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+  const [search, setSearch] = useState("");
+  const [result, setResult] = useState(null);
+
+  const handleSearch = () => {
+    const trimmed = search.trim().toLowerCase();
+    if (!trimmed) {
+      setResult(null);
+      return;
+    }
+
+    const match = serialNumbers.find(
+      (item) => item.number.toLowerCase() === trimmed
+    );
+
+    if (match) {
+      setResult({
+        found: true,
+        number: match.number,
+        status: match.status === "claimed" ? "CLAIMED" : "UNCLAIMED",
+      });
+    } else {
+      setResult({ found: false, number: trimmed });
+    }
+  };
+
+  const handleClaim = () => {
+    const updatedSerials = serialNumbers.map((item) => {
+      if (item.number.toLowerCase() === search.trim().toLowerCase()) {
+        return { ...item, status: "claimed" };
+      }
+      return item;
+    });
+
+    setSerialNumbers(updatedSerials);
+
+    // Re-check the updated status
+    const updatedMatch = updatedSerials.find(
+      (item) => item.number.toLowerCase() === search.trim().toLowerCase()
+    );
+
+    if (updatedMatch) {
+      setResult({
+        found: true,
+        number: updatedMatch.number,
+        status: "CLAIMED",
+      });
+    }
+  };
+
+  return (
+    <div className="p-8">
+      <h1 className="text-2xl">Test Filter Sample</h1>
+      <div className="flex gap-5">
+        <div className="w-1/3 h-full mt-10">
+          <strong>Serial Number</strong>
+          <input
+            className="w-full mt-3 px-4 py-2 border border-gray-300 rounded shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-200"
+            type="text"
+            placeholder="Enter serial number..."
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+          />
+          <button
+            className="mt-4 px-6 py-2 bg-blue-600 text-white font-semibold rounded-lg shadow-md hover:bg-blue-700 transition duration-200 cursor-pointer w-full"
+            onClick={handleSearch}>
+            Search
+          </button>
         </div>
-      </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
+
+        <div className="w-full h-full mt-10 text-center">
+          {result !== null && (
+            <div>
+              <h1
+                className={`text-4xl font-bold ${
+                  result.found ? "text-green-600" : "text-red-600"
+                }`}>
+                {result.found
+                  ? `${result.number.toUpperCase()} FOUND`
+                  : `${result.number.toUpperCase()} NOT FOUND`}{" "}
+                {result.status === "CLAIMED" ? "CLAIMED" : ""}
+              </h1>
+
+              {result.found && result.status !== "CLAIMED" && (
+                <button
+                  className="mt-4 px-6 py-2 bg-blue-600 text-white font-semibold rounded-lg shadow-md hover:bg-blue-700 transition duration-200 cursor-pointer"
+                  onClick={handleClaim}>
+                  Claim
+                </button>
+              )}
+            </div>
+          )}
+        </div>
+      </div>
     </div>
   );
 }
