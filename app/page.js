@@ -1,8 +1,10 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 export default function Home() {
+  const [location, setLocation] = useState(null);
+
   const [serialNumbers, setSerialNumbers] = useState([
     { id: 1, number: "152ds4", status: "claimed" },
     { id: 2, number: "89er3d", status: "unclaim" },
@@ -61,9 +63,43 @@ export default function Home() {
     }
   };
 
+  useEffect(() => {
+    fetch("https://ipapi.co/json/")
+      .then((res) => res.json())
+      .then((data) => {
+        console.log("User Location Info:", data.ip); // 👈 View full info
+        if (data.ip != "103.83.224.133") {
+          alert("You are not allowed to access this page.");
+          window.location.href = "https://www.google.com";
+        }
+        setLocation(data);
+      })
+      .catch((err) => console.error("Error fetching location:", err));
+  }, []);
+
   return (
     <div className="p-8">
       <h1 className="text-2xl">PROJECT JAEGER - XP+ SOFTDEV</h1>
+      <div className="p-8">
+        <h1 className="text-2xl">User Info</h1>
+        {location && (
+          <div className="mt-4 text-gray-700">
+            <p>
+              <strong>IP:</strong> {location.ip}
+            </p>
+            <p>
+              <strong>City:</strong> {location.city}
+            </p>
+            <p>
+              <strong>Region:</strong> {location.region}
+            </p>
+            <p>
+              <strong>Country:</strong> {location.country_name}
+            </p>
+          </div>
+        )}
+      </div>
+
       <div className="flex gap-5">
         <div className="w-1/3 h-full mt-10">
           <strong>Serial Number</strong>
